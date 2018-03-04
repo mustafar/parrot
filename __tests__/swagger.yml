@@ -1,0 +1,43 @@
+swagger: "2.0"
+
+info:
+  title: Parrot Test Api
+  description: test api
+  version: 1.0.0
+
+basePath: /parrot-test
+schemes:
+  - http
+
+produces:
+  - application/json
+  - text/plain
+consumes:
+  - application/json
+
+paths:
+
+  /robin/location:
+    get:
+      x-swagger-router-controller: robin-location-controller
+      responses:
+        500:
+          description: failed to find robin
+        200:
+          schema:
+            type: string
+            description: robin found
+
+  /batman/location:
+    get:
+      x-swagger-router-controller: batman-location-controller
+      responses:
+        500:
+          description: failed to find batman
+        201:
+          example: alfred's outhouse # example is at an unexpected level
+        200:
+          schema:
+            type: string
+            example: batcave # example at correct level
+            description: batman found

@@ -1,3 +1,6 @@
+import { findKey, get as getOrDefault } from 'lodash';
+
+const fs = require('fs');
 const express = require('express');
 const swaggerMiddleware = require('swagger-express-middleware');
 const interceptor = require('express-interceptor');
@@ -9,22 +12,37 @@ const swaggerPath = process.env.SWAGGER_SPEC;
 if (port === undefined || swaggerPath === undefined) {
   throw new Error('PORT and SWAGGER_SPEC environment variables must be set.');
 }
+fs.stat(swaggerPath, (err) => {
+  if (err) {
+    throw new Error('swagger spec not found');
+  }
+});
 
-const swaggerJsonDeserializerInterceptor = interceptor((req, res) => ({
-  isInterceptable: () => /application\/json/.test(res.get('Content-Type')),
+const swaggerInterceptor = interceptor((req, res) => ({
+  isInterceptable: () => true,
   intercept: () => {
-    const response = req.swagger.path[req.method.toLowerCase()].responses['200'].schema.example;
-    if (response) {
-      res.send(response);
+    if (req.swagger.path === null || req.swagger.path === undefined) {
+      res.sendStatus(501).end(); // Not Implemented
+      return;
+    }
+    const { responses } = req.swagger.path[req.method.toLowerCase()];
+    const exampleResponseHttpCode = findKey(responses, r => getOrDefault(r, 'schema.example') !== undefined);
+
+    if (exampleResponseHttpCode !== undefined) {
+      res.send(responses[exampleResponseHttpCode].schema.example).end();
     } else {
-      res.sendStatus(501); // Not Implemented
+      res.sendStatus(501).end(); // Not Implemented
     }
   },
 }));
 
 swaggerMiddleware(swaggerPath, app, (err, middleware) => {
+  if (err) {
+    throw err;
+  }
+
   app.use(
-    swaggerJsonDeserializerInterceptor,
+    swaggerInterceptor,
     middleware.metadata(),
     middleware.CORS(),
     middleware.files(),
