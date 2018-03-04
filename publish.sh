@@ -31,10 +31,10 @@ version=v$(cat package.json \
   | tr -d '[[:space:]]')
 echo "version: $version"
 
-docker tag $docker_image_name $docker_image_name:$version
-docker push $docker_image_name
-
 git commit -am "chore: $1 release" package.json --no-verify
 git tag $version
 git push origin master
 git push origin $version
+
+docker tag $docker_image_name $docker_image_name:$version
+docker push $docker_image_name
