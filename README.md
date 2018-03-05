@@ -17,13 +17,17 @@ ENV SWAGGER_SPEC="/swagger.yml
 
 ### Build container image
 Run the following command (in the same dir as the Dockerfile) to build your image
-`docker build -t my_api .`
+```
+docker build -t my_api .
+```
 
 You may now publish this image to a docker repository.
 
 ### Run container
 Run this command to start your container
-`docker run -p 3000:3000 my_api:latest`
+```
+docker run -p 3000:3000 my_api:latest
+```
 
 The `-p` directive sets up port forwarding from your container to host.
 
@@ -77,4 +81,14 @@ await fetch(`${apiBase}/batman/location`, { method: 'GET' });
 Check out the [tests](https://github.com/mustafar/parrot/blob/master/__tests__/tests.js) for more examples!
 
 # Contributing
-Send me a PR or open an [Issue](https://github.com/mustafar/parrot/issues).
+Spin up the test container with this command
+```
+npm run build && npm run test:setup
+```
+
+Run tests with
+```
+npm test
+```
+
+Please feel free to send me a PR or open an [Issue](https://github.com/mustafar/parrot/issues).
