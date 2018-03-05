@@ -9,8 +9,8 @@ FROM mustafar/parrot:latest
 # set the port for the mock api
 ENV PORT=3000
 
-# copy a swagger spec to /swagger.yml and also set
-# the path of swagger.yml in the container
+# copy a swagger spec to /swagger.yml (inside container)
+# and also set the path of swagger.yml in the container
 COPY /path/to/a/swagger/spec /swagger.yml
 ENV SWAGGER_SPEC="/swagger.yml
 ```
