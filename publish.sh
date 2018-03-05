@@ -31,7 +31,8 @@ version=v$(cat package.json \
   | tr -d '[[:space:]]')
 echo "version: $version"
 
-git commit -am "chore: $1 release" package.json --no-verify
+git add package.json
+git commit -m "chore: $1 release" package.json --no-verify
 git tag $version
 git push origin master
 git push origin $version
