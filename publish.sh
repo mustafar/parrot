@@ -39,7 +39,7 @@ echo "version: $version"
 echo 'here 1'
 git add package.json
 echo 'here 2'
-git commit -m "chore: $1 release" package.json --no-verify
+git commit -m "chore: $1 release" package.json --no-verify --allow-empty
 echo 'here 3'
 git tag $version
 echo 'here 4'
