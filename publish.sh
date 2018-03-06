@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -o errexit
 
+if [ $(git rev-parse --abbrev-ref HEAD) != "master" ]; then
+  echo "this script runs only against master"
+  exit 1
+fi
+
 docker_image_name='mustafar/parrot'
 
 if [ -z $1 ]; then
