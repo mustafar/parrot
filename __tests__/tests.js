@@ -45,6 +45,7 @@ test('if mocked, with body, returns the mocked status and body', async () => {
     { method: 'PUT', body: JSON.stringify(mock), headers: { 'content-type': 'application/json' } },
   );
   expect(response.status).toEqual(204);
+  expect(response.statusText).toEqual('No Content');
 
   response = await fetch(`${apiBase}/batman/location`, { method: 'GET' });
   expect(response.status).toEqual(mock.status);

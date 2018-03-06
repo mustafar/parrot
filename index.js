@@ -10,6 +10,14 @@ const app = express();
 const port = process.env.PORT;
 const swaggerPath = process.env.SWAGGER_SPEC;
 
+const setRequestStatus = (res, code, message) => {
+  // this is a hack to overwrite the message set by the swagger middleware
+  // (which is not overwritten by res.status(204).send('Not Implemented'), etc )
+  res.statusMessage = message;
+  res.status(code);
+  return res;
+};
+
 let mocks = {};
 const resetMocks = () => { mocks = {}; };
 const mockKey = (method, path) => `${method.toUpperCase()} ${path}`;
@@ -39,16 +47,16 @@ const handle = (req, res) => {
     } else if (req.method === 'PUT') {
       saveMock(req.body);
     } else {
-      res.sendStatus(501).end(); // Not Implemented
+      res.status(501).send('Not Implemented').end();
       return;
     }
-    res.sendStatus(204).end(); // No Content (but we're good)
+    setRequestStatus(res, 204, 'No Content').send().end();
     return;
   }
 
   // check for an invalid path
   if (req.swagger.path === null || req.swagger.path === undefined) {
-    res.sendStatus(501).end(); // Not Implemented
+    setRequestStatus(res, 501, 'Not Implemented').send().end();
     return;
   }
 
@@ -71,7 +79,7 @@ const handle = (req, res) => {
     return;
   }
 
-  res.sendStatus(501).end(); // Not Implemented
+  setRequestStatus(res, 501, 'Not Implemented').send().end();
 };
 
 if (port === undefined || swaggerPath === undefined) {
@@ -90,7 +98,7 @@ const swaggerInterceptor = interceptor((req, res) => ({
       handle(req, res);
     } catch (err) {
       console.log(err); // eslint-disable-line no-console
-      res.sendStatus(500).end(); // Oops
+      setRequestStatus(res, 500, 'Internal Server Error').send().end(); // Oops
     }
   },
 }));
