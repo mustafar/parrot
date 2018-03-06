@@ -36,11 +36,17 @@ version=v$(cat package.json \
   | tr -d '[[:space:]]')
 echo "version: $version"
 
+echo 'here 1'
 git add package.json
+echo 'here 2'
 git commit -m "chore: $1 release" package.json --no-verify
+echo 'here 3'
 git tag $version
+echo 'here 4'
 git push origin master
+echo 'here 5'
 git push origin $version
+echo 'here 6'
 
 docker tag $docker_image_name $docker_image_name:$version
 docker push $docker_image_name
