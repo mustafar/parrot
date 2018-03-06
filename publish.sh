@@ -41,9 +41,9 @@ git add package.json
 echo 'here 2'
 git commit -m "chore: $1 release" package.json --no-verify --allow-empty
 echo 'here 3'
-git tag $version
-echo 'here 4'
 git push origin master
+echo 'here 4'
+git tag $version --force
 echo 'here 5'
 git push origin $version
 echo 'here 6'
