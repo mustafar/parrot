@@ -14,7 +14,7 @@ echo 'building image...'
 docker build -t ${PARROT_NAME} dist
 
 echo '\nstarting container...'
-docker run -d \
+docker run -d --name mustafar_parrot \
 -e PORT=15009 \
 -p 15009:15009 \
 -e SWAGGER_SPEC="/swagger.yml" \
