@@ -41,7 +41,7 @@ const getMockResponse = (method, path) => mocks[mockKey(method, path)];
 
 const handle = (req, res) => {
   // check for a mocking call
-  if (/\/mock$/.test(req.path)) {
+  if (req.path === `${req.swagger.api.basePath}/mock`) {
     if (req.method === 'DELETE') {
       resetMocks();
     } else if (req.method === 'PUT') {
