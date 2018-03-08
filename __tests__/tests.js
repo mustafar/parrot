@@ -33,6 +33,25 @@ test('if not mocked, return 1st example response', async () => {
   expect(response.text()).resolves.toEqual('batcave');
 });
 
+test('only /mock can be used to mock', async () => {
+  const mock = {
+    method: 'GET', path: '/batman/location', status: 201, response: { arkham: 'asylum' },
+  };
+  let response = await fetch(
+    `${apiBase}/some/path/to/mock`,
+    { method: 'PUT', body: JSON.stringify(mock), headers: { 'content-type': 'application/json' } },
+  );
+  expect(response.status).toEqual(501);
+  expect(response.statusText).toEqual('Not Implemented');
+
+  response = await fetch(
+    `${apiBase}/mock`,
+    { method: 'PUT', body: JSON.stringify(mock), headers: { 'content-type': 'application/json' } },
+  );
+  expect(response.status).toEqual(204);
+  expect(response.statusText).toEqual('No Content');
+});
+
 test('if mocked, with body, returns the mocked status and body', async () => {
   let response = await fetch(`${apiBase}/batman/location`);
   expect(response.text()).resolves.toEqual('batcave');
