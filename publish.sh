@@ -6,14 +6,14 @@ if [ $(git rev-parse --abbrev-ref HEAD) != "master" ]; then
   exit 1
 fi
 
-docker_image_name='mustafar/parrot'
+docker_image_name="mustafar/parrot"
 
 if [ -z $1 ]; then
   echo "release type not provided"
   exit 1
 fi
 
-version_commit_message = "chore: uptick version"
+version_commit_message="chore: uptick version"
 
 if [ $1 == "patch" ]; then
   echo "starting patch release"
