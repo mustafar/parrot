@@ -13,15 +13,17 @@ if [ -z $1 ]; then
   exit 1
 fi
 
+version_commit_message = "chore: uptick version"
+
 if [ $1 == "patch" ]; then
   echo "starting patch release"
-  npm version patch
+  npm version patch -m "${version_commit_message}"
 elif [ $1 == "minor" ]; then
   echo "starting minor release"
-  npm version minor
+  npm version minor -m "${version_commit_message}"
 elif [ $1 == "major" ]; then
   echo "starting major release"
-  npm version major
+  npm version major -m "${version_commit_message}"
 else
   echo "invalid release type"
   exit 1
