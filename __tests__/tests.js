@@ -6,6 +6,11 @@ beforeEach(async () => {
   await fetch(`${apiBase}/mock`, { method: 'DELETE' });
 });
 
+test('if invalid api base path, then 404', async () => {
+  const response = await fetch('http://localhost:15009/foo');
+  expect(response.status).toEqual(404);
+});
+
 test('if invalid path, then 501', async () => {
   const response = await fetch(`${apiBase}/foo/bar`);
   expect(response.status).toEqual(501);

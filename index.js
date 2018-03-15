@@ -40,6 +40,12 @@ const saveMock = (mockBehavior) => {
 const getMockResponse = (method, path) => mocks[mockKey(method, path)];
 
 const handle = (req, res) => {
+  // check base path
+  if (getOrDefault(req, 'swagger.api.basePath') === undefined) {
+    setRequestStatus(res, 404, 'Not Found').send().end();
+    return;
+  }
+
   // check for a mocking call
   if (req.path === `${req.swagger.api.basePath}/mock`) {
     if (req.method === 'DELETE') {
