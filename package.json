@@ -1,7 +1,7 @@
 {
   "name": "parrot",
   "repository": "github:mustafar/parrot",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "api mocks",
   "main": "index.js",
   "scripts": {
