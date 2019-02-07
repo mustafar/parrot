@@ -135,8 +135,15 @@ swaggerMiddleware(swaggerPath, app, (err, middleware) => {
     middleware.mock(),
   );
 
-  app.listen(port, () => {
+  const server = app.listen(port, () => {
     // eslint-disable-next-line no-console
     console.log(`The mock api is now running at http://localhost:${port}`);
+  });
+
+  ['SIGINT', 'SIGTERM'].forEach(function (signal) {
+    process.on(signal, function () {
+      console.log('Shutting down...');
+      server.close(process.exit);
+    });
   });
 });
