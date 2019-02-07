@@ -1,4 +1,6 @@
-import { findKey, get as getOrDefault } from 'lodash';
+import { findKey, get as getOrDefault, isEmpty } from 'lodash';
+import JSum from 'jsum';
+import querystring from 'querystring';
 
 const fs = require('fs');
 const express = require('express');
@@ -9,6 +11,9 @@ const interceptor = require('express-interceptor');
 const app = express();
 const port = process.env.PORT;
 const swaggerPath = process.env.SWAGGER_SPEC;
+
+// eslint-disable-next-line
+const getQueryHash = (query) => isEmpty(query) ? '' : JSum.digest(query, 'SHA256', 'hex');
 
 const setRequestStatus = (res, code, message) => {
   // this is a hack to overwrite the message set by the swagger middleware
@@ -23,7 +28,7 @@ const resetMocks = () => { mocks = {}; };
 const mockKey = (method, path) => `${method.toUpperCase()} ${path}`;
 const saveMock = (mockBehavior) => {
   const {
-    method, path, status, response,
+    method, path, status, response, qs,
   } = mockBehavior;
   if (method === undefined ||
     path === undefined ||
@@ -35,9 +40,13 @@ const saveMock = (mockBehavior) => {
   if (response !== undefined) {
     mockResponse.response = response;
   }
-  mocks[mockKey(method, path)] = mockResponse;
+  const queryHash = getQueryHash(querystring.parse(qs));
+  mocks[mockKey(method, `${path}${queryHash}`)] = mockResponse;
 };
-const getMockResponse = (method, path) => mocks[mockKey(method, path)];
+const getMockResponse = (method, path, query) => {
+  const queryHash = getQueryHash(query);
+  return mocks[mockKey(method, `${path}${queryHash}`)];
+};
 
 const handle = (req, res) => {
   // check base path
@@ -67,7 +76,7 @@ const handle = (req, res) => {
   }
 
   // checked for mocked bhavior
-  const mockedResponse = getMockResponse(req.method, req.swagger.pathName);
+  const mockedResponse = getMockResponse(req.method, req.swagger.pathName, req.query);
   if (mockedResponse) {
     res.status(mockedResponse.status);
     if (mockedResponse.response !== undefined) {

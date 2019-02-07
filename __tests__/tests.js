@@ -116,3 +116,43 @@ test('if mocked, subsequent mocks will override', async () => {
   expect(response.status).toEqual(200);
   expect(response.text()).resolves.toEqual('wayne manor');
 });
+
+
+test('if mocked, with query string, returns different responses by query', async () => {
+  let response = await fetch(`${apiBase}/batman/location`);
+  expect(response.text()).resolves.toEqual('batcave');
+
+  const mock = {
+    method: 'GET',
+    path: '/robin/location',
+    qs: 'greeting=hi%20you&foo=1',
+    status: 201,
+    response: { arkham: 'asylum' },
+  };
+  response = await fetch(
+    `${apiBase}/mock`,
+    { method: 'PUT', body: JSON.stringify(mock), headers: { 'content-type': 'application/json' } },
+  );
+  expect(response.status).toEqual(204);
+  expect(response.statusText).toEqual('No Content');
+
+  // works when query is urlencoded
+  response = await fetch(`${apiBase}/robin/location?greeting=hi%20you&foo=1`, { method: 'GET' });
+  expect(response.status).toEqual(mock.status);
+  expect(response.json()).resolves.toEqual(mock.response);
+
+  // works when query is NOT urlencoded
+  response = await fetch(`${apiBase}/robin/location?greeting=hi you&foo=1`, { method: 'GET' });
+  expect(response.status).toEqual(mock.status);
+  expect(response.json()).resolves.toEqual(mock.response);
+
+  // change query params order
+  response = await fetch(`${apiBase}/robin/location?foo=1&greeting=hi%20you`, { method: 'GET' });
+  expect(response.status).toEqual(mock.status);
+  expect(response.json()).resolves.toEqual(mock.response);
+
+  // try unmocked query
+  response = await fetch(`${apiBase}/robin/location?hello=world`, { method: 'GET' });
+  expect(response.status).toEqual(501);
+  expect(response.statusText).toEqual('Not Implemented');
+});

@@ -1,5 +1,5 @@
 # Parrot
-Mockable, containerized API generated from a Swagger spec.  
+Mockable, containerized API generated from a Swagger spec.
 **Docker Repo**: https://hub.docker.com/r/mustafar/parrot/
 
 # Running
@@ -61,6 +61,7 @@ Call `PUT /mock` to mock another route
 const mock = {
   method: 'GET',
   path: '/batman/location',
+  qs: 'hello=world&foo=bar', // optional query string
   status: 201,
   response: 'arkham',
 };
@@ -74,7 +75,7 @@ await fetch(
 );
 
 // invoke (should return "arkham (201)")
-await fetch(`${apiBase}/batman/location`, { method: 'GET' });
+await fetch(`${apiBase}/batman/location?hello=world&foo=bar`, { method: 'GET' });
 ```
 
 `DELETE /mock` will reset all mocked behavor.

@@ -35,7 +35,9 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "express-interceptor": "^1.2.0",
+    "jsum": "^0.1.4",
     "lodash": "^4.17.5",
+    "querystring": "^0.2.0",
     "swagger-express-middleware": "^1.0.0-alpha.12"
   }
 }
