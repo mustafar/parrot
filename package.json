@@ -21,6 +21,9 @@
   ],
   "author": "Mustafa Rizvi",
   "license": "MIT",
+  "jest": {
+    "testURL": "http://localhost/"
+  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
@@ -38,6 +41,6 @@
     "jsum": "^0.1.4",
     "lodash": "^4.17.5",
     "querystring": "^0.2.0",
-    "swagger-express-middleware": "^1.0.0-alpha.12"
+    "swagger-express-middleware": "^2.0.1"
   }
 }
