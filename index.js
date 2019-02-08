@@ -140,10 +140,12 @@ swaggerMiddleware(swaggerPath, app, (err, middleware) => {
     console.log(`The mock api is now running at http://localhost:${port}`);
   });
 
+  /* eslint-disable */
   ['SIGINT', 'SIGTERM'].forEach(function (signal) {
     process.on(signal, function () {
       console.log('Shutting down...');
       server.close(process.exit);
     });
   });
+  /* eslint-enable */
 });
