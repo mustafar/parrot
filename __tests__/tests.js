@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 const apiBase = 'http://localhost:15009/parrot-test';
 
@@ -180,6 +180,11 @@ test('if mocked, with path params, returns different responses by path', async (
 
   // cannot find unmocked path
   response = await fetch(`${apiBase}/robin/catchphrases/2`, { method: 'GET' });
+  expect(response.status).toEqual(501);
+  expect(response.statusText).toEqual('Not Implemented');
+
+  // cannot find path with variable
+  response = await fetch(`${apiBase}/robin/catchphrases/{id}`, { method: 'GET' });
   expect(response.status).toEqual(501);
   expect(response.statusText).toEqual('Not Implemented');
 });
