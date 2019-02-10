@@ -28,6 +28,17 @@ paths:
             type: string
             description: robin found
 
+  /robin/catchphrases/{id}:
+    get:
+      x-swagger-router-controller: robin-catchphrases-controller
+      responses:
+        500:
+          description: failed to find catchphrase
+        200:
+          schema:
+            type: string
+            description: robin catchphrase
+
   /batman/location:
     get:
       x-swagger-router-controller: batman-location-controller

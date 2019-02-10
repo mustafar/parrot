@@ -156,3 +156,30 @@ test('if mocked, with query string, returns different responses by query', async
   expect(response.status).toEqual(501);
   expect(response.statusText).toEqual('Not Implemented');
 });
+
+test('if mocked, with path params, returns different responses by path', async () => {
+  let response = await fetch(`${apiBase}/robon/catchphrases`);
+
+  const mock = {
+    method: 'GET',
+    path: '/robin/catchphrases/1',
+    status: 200,
+    response: { catchphrases: 'holy gemini batman!' },
+  };
+  response = await fetch(
+    `${apiBase}/mock`,
+    { method: 'PUT', body: JSON.stringify(mock), headers: { 'content-type': 'application/json' } },
+  );
+  expect(response.status).toEqual(204);
+  expect(response.statusText).toEqual('No Content');
+
+  // works when path is mocked
+  response = await fetch(`${apiBase}/robin/catchphrases/1`, { method: 'GET' });
+  expect(response.status).toEqual(mock.status);
+  expect(response.json()).resolves.toEqual(mock.response);
+
+  // cannot find unmocked path
+  response = await fetch(`${apiBase}/robin/catchphrases/2`, { method: 'GET' });
+  expect(response.status).toEqual(501);
+  expect(response.statusText).toEqual('Not Implemented');
+});

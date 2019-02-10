@@ -55,8 +55,11 @@ const handle = (req, res) => {
     return;
   }
 
+  // get current request path
+  const path = req.path.substring(req.swagger.api.basePath.length);
+
   // check for a mocking call
-  if (req.path === `${req.swagger.api.basePath}/mock`) {
+  if (path === '/mock') {
     if (req.method === 'DELETE') {
       resetMocks();
     } else if (req.method === 'PUT') {
@@ -76,7 +79,7 @@ const handle = (req, res) => {
   }
 
   // checked for mocked bhavior
-  const mockedResponse = getMockResponse(req.method, req.swagger.pathName, req.query);
+  const mockedResponse = getMockResponse(req.method, path, req.query);
   if (mockedResponse) {
     res.status(mockedResponse.status);
     if (mockedResponse.response !== undefined) {
