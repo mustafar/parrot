@@ -80,6 +80,11 @@ await fetch(`${apiBase}/batman/location?hello=world&foo=bar`, { method: 'GET' })
 
 `DELETE /mock` will reset all mocked behavor.
 
+To enable verbose logging, set `VERBOSE` environment variable when running the container
+```
+-e VERBOSE=on
+```
+
 Check out the [tests](https://github.com/mustafar/parrot/blob/master/__tests__/tests.js) for more examples!
 
 # Contributing

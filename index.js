@@ -11,6 +11,7 @@ const interceptor = require('express-interceptor');
 const app = express();
 const port = process.env.PORT;
 const swaggerPath = process.env.SWAGGER_SPEC;
+const isVerboseMode = process.env.VERBOSE !== undefined;
 
 // eslint-disable-next-line
 const getQueryHash = (query) => isEmpty(query) ? '' : JSum.digest(query, 'SHA256', 'hex');
@@ -45,18 +46,29 @@ const saveMock = (mockBehavior) => {
 };
 const getMockResponse = (method, path, query) => {
   const queryHash = getQueryHash(query);
-  return mocks[mockKey(method, `${path}${queryHash}`)];
+  const key = mockKey(method, `${path}${queryHash}`);
+  const mockResponse = mocks[key];
+  if (isVerboseMode) {
+    /* eslint-disable no-console */
+    console.log('---------------------');
+    console.log(`mocked keys: [ ${Object.keys(mocks)} ]`);
+    console.log(`requested key: ${key}`);
+    /* eslint-enable no-console */
+  }
+  return mockResponse;
 };
 
 const handle = (req, res) => {
-  // check base path
-  if (getOrDefault(req, 'swagger.api.basePath') === undefined) {
+  // get swagger basePath
+  const basePath = getOrDefault(req, 'swagger.api.basePath', '')
+    .replace(/\/$/, '');
+
+  if (!getOrDefault(req, 'swagger.api')) {
     setRequestStatus(res, 404, 'Not Found').send().end();
-    return;
   }
 
   // get current request path
-  const path = req.path.substring(req.swagger.api.basePath.length);
+  const path = req.path.substring(basePath.length);
 
   // check for a mocking call
   if (path === '/mock') {

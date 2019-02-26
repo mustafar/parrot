@@ -16,6 +16,7 @@ docker build -t ${PARROT_NAME} dist
 echo '\nstarting container...'
 docker run -d --name parrot \
 -e PORT=15009 \
+-e VERBOSE=on \
 -p 15009:15009 \
 -e SWAGGER_SPEC="/swagger.yml" \
 -v "${PARROT_ROOT}/__tests__/swagger.yml":/swagger.yml \
