@@ -158,15 +158,13 @@ test('if mocked, with query string, returns different responses by query', async
 });
 
 test('if mocked, with path params, returns different responses by path', async () => {
-  let response = await fetch(`${apiBase}/robin/catchphrases`);
-
   const mock = {
     method: 'GET',
     path: '/robin/catchphrases/1',
     status: 200,
     response: { catchphrases: 'holy gemini batman!' },
   };
-  response = await fetch(
+  let response = await fetch(
     `${apiBase}/mock`,
     { method: 'PUT', body: JSON.stringify(mock), headers: { 'content-type': 'application/json' } },
   );
@@ -189,7 +187,7 @@ test('if mocked, with path params, returns different responses by path', async (
   expect(response.statusText).toEqual('Bad Request');
 });
 
-test('if mocked, but called with invalid request, then 400', async () => {
+test('if mocked, but called with invalid path, then 400', async () => {
   const mock = {
     method: 'GET',
     path: '/robin/catchphrases/invalid_id',

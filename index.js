@@ -149,10 +149,6 @@ const errorMiddleware = (err, req, res, next) => {
 };
 
 swaggerMiddleware(swaggerPath, app, (err, middleware) => {
-  // if (err) {
-  //   throw err;
-  // }
-
   app.use(
     swaggerInterceptor,
     bodyParser.urlencoded({ extended: false }),
