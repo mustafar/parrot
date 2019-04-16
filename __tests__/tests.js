@@ -11,9 +11,9 @@ test('if invalid api base path, then 404', async () => {
   expect(response.status).toEqual(404);
 });
 
-test('if invalid path, then 501', async () => {
+test('if invalid path, then 404', async () => {
   const response = await fetch(`${apiBase}/foo/bar`);
-  expect(response.status).toEqual(501);
+  expect(response.status).toEqual(404);
 });
 
 /**
@@ -158,7 +158,7 @@ test('if mocked, with query string, returns different responses by query', async
 });
 
 test('if mocked, with path params, returns different responses by path', async () => {
-  let response = await fetch(`${apiBase}/robon/catchphrases`);
+  let response = await fetch(`${apiBase}/robin/catchphrases`);
 
   const mock = {
     method: 'GET',
@@ -185,6 +185,28 @@ test('if mocked, with path params, returns different responses by path', async (
 
   // cannot find path with variable
   response = await fetch(`${apiBase}/robin/catchphrases/{id}`, { method: 'GET' });
-  expect(response.status).toEqual(501);
-  expect(response.statusText).toEqual('Not Implemented');
+  expect(response.status).toEqual(400);
+  expect(response.statusText).toEqual('Bad Request');
+});
+
+test('if mocked, but called with invalid request, then 400', async () => {
+  const mock = {
+    method: 'GET',
+    path: '/robin/catchphrases/invalid_id',
+    status: 200,
+    response: { catchphrases: 'holy gemini batman!' },
+  };
+
+  // mock with invalid path
+  let response = await fetch(
+    `${apiBase}/mock`,
+    { method: 'PUT', body: JSON.stringify(mock), headers: { 'content-type': 'application/json' } },
+  );
+  expect(response.status).toEqual(204);
+  expect(response.statusText).toEqual('No Content');
+
+  // invoke invalid path
+  response = await fetch(`${apiBase}/robin/catchphrases/invalid_id`, { method: 'GET' });
+  expect(response.status).toEqual(400);
+  expect(response.statusText).toEqual('Bad Request');
 });
