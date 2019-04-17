@@ -46,8 +46,8 @@ test('only /mock can be used to mock', async () => {
     `${apiBase}/some/path/to/mock`,
     { method: 'PUT', body: JSON.stringify(mock), headers: { 'content-type': 'application/json' } },
   );
-  expect(response.status).toEqual(501);
-  expect(response.statusText).toEqual('Not Implemented');
+  expect(response.status).toEqual(404);
+  expect(response.statusText).toEqual('Not Found');
 
   response = await fetch(
     `${apiBase}/mock`,

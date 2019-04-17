@@ -91,7 +91,7 @@ const handle = (req, res) => {
 
   // check for an invalid path
   if (req.swagger.path === null || req.swagger.path === undefined) {
-    setRequestStatus(res, httpStatus.NOT_IMPLEMENTED).send().end();
+    setRequestStatus(res, httpStatus.NOT_FOUND).send().end();
     return;
   }
 
