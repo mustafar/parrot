@@ -1,3 +1,4 @@
+import httpStatus from 'http-status-codes';
 import { findKey, get as getOrDefault, isEmpty } from 'lodash';
 import JSum from 'jsum';
 import querystring from 'querystring';
@@ -16,10 +17,10 @@ const isVerboseMode = process.env.VERBOSE !== undefined;
 // eslint-disable-next-line
 const getQueryHash = (query) => isEmpty(query) ? '' : JSum.digest(query, 'SHA256', 'hex');
 
-const setRequestStatus = (res, code, message) => {
+const setRequestStatus = (res, code) => {
   // this is a hack to overwrite the message set by the swagger middleware
   // (which is not overwritten by res.status(204).send('Not Implemented'), etc )
-  res.statusMessage = message;
+  res.statusMessage = httpStatus.getStatusText(code);
   res.status(code);
   return res;
 };
@@ -63,8 +64,12 @@ const handle = (req, res) => {
   const basePath = getOrDefault(req, 'swagger.api.basePath', '')
     .replace(/\/$/, '');
 
+  if (getOrDefault(req, 'statusOverride')) {
+    setRequestStatus(res, req.statusOverride).send().end();
+  }
+
   if (!getOrDefault(req, 'swagger.api')) {
-    setRequestStatus(res, 404, 'Not Found').send().end();
+    setRequestStatus(res, httpStatus.NOT_FOUND).send().end();
   }
 
   // get current request path
@@ -80,13 +85,13 @@ const handle = (req, res) => {
       res.status(501).send('Not Implemented').end();
       return;
     }
-    setRequestStatus(res, 204, 'No Content').send().end();
+    setRequestStatus(res, httpStatus.NO_CONTENT).send().end();
     return;
   }
 
   // check for an invalid path
   if (req.swagger.path === null || req.swagger.path === undefined) {
-    setRequestStatus(res, 501, 'Not Implemented').send().end();
+    setRequestStatus(res, httpStatus.NOT_FOUND).send().end();
     return;
   }
 
@@ -109,7 +114,7 @@ const handle = (req, res) => {
     return;
   }
 
-  setRequestStatus(res, 501, 'Not Implemented').send().end();
+  setRequestStatus(res, httpStatus.NOT_IMPLEMENTED).send().end();
 };
 
 if (port === undefined || swaggerPath === undefined) {
@@ -128,16 +133,22 @@ const swaggerInterceptor = interceptor((req, res) => ({
       handle(req, res);
     } catch (err) {
       console.log(err); // eslint-disable-line no-console
-      setRequestStatus(res, 500, 'Internal Server Error').send().end(); // Oops
+      setRequestStatus(res, httpStatus.INTERNAL_SERVER_ERROR).send().end(); // Oops
     }
   },
 }));
 
-swaggerMiddleware(swaggerPath, app, (err, middleware) => {
-  if (err) {
-    throw err;
+const errorMiddleware = (err, req, res, next) => {
+  if (err && err.message && !/mock$/.test(err.message)) {
+    console.log(err); // eslint-disable-line no-console
+    req.statusOverride = err.status;
+    next();
+  } else {
+    next();
   }
+};
 
+swaggerMiddleware(swaggerPath, app, (err, middleware) => {
   app.use(
     swaggerInterceptor,
     bodyParser.urlencoded({ extended: false }),
@@ -147,6 +158,7 @@ swaggerMiddleware(swaggerPath, app, (err, middleware) => {
     middleware.files(),
     middleware.parseRequest(),
     middleware.validateRequest(),
+    errorMiddleware,
     middleware.mock(),
   );
 
