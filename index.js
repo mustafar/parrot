@@ -151,7 +151,6 @@ const swaggerInterceptor = interceptor((req, res) => ({
 }));
 
 const errorMiddleware = (err, req, res, next) => {
-  console.log(err);
   if (err && err.message && !/mock$/.test(err.message)) {
     console.log(err); // eslint-disable-line no-console
     req.statusOverride = err.status;
@@ -161,30 +160,18 @@ const errorMiddleware = (err, req, res, next) => {
   }
 };
 
-const debugMiddleware = msg =>
-  (req, res, next) => {
-    console.log(msg, req.openapi);
-    next();
-  };
-
 swaggerMiddleware(swaggerPath, app, (err, middleware) => {
   app.use(
     swaggerInterceptor,
     bodyParser.urlencoded({ extended: false }),
     bodyParser.json(),
     middleware.metadata(),
-    debugMiddleware('ok5'),
     middleware.CORS(),
-    debugMiddleware('ok6'),
     middleware.files(),
-    debugMiddleware('ok7'),
     middleware.parseRequest(),
-    debugMiddleware('ok8'),
     middleware.validateRequest(),
     errorMiddleware,
-    debugMiddleware('ok10'),
     middleware.mock(),
-    debugMiddleware('ok11'),
   );
 
   const server = app.listen(port, () => {
