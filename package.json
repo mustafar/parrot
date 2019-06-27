@@ -42,6 +42,6 @@
     "jsum": "^0.1.4",
     "lodash": "^4.17.11",
     "querystring": "^0.2.0",
-    "swagger-express-middleware": "^2.0.1"
+    "swagger-express-middleware": "^3.0.0-alpha.5"
   }
 }

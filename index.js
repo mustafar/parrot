@@ -60,15 +60,20 @@ const getMockResponse = (method, path, query) => {
 };
 
 const handle = (req, res) => {
+  console.log('we here!', req.openapi.api);
+
+  // todo fix openapi basePath
   // get swagger basePath
-  const basePath = getOrDefault(req, 'swagger.api.basePath', '')
+  const basePath = getOrDefault(req.openapi.api, 'basePath', '')
     .replace(/\/$/, '');
+
+  console.log(basePath);
 
   if (getOrDefault(req, 'statusOverride')) {
     setRequestStatus(res, req.statusOverride).send().end();
   }
 
-  if (!getOrDefault(req, 'swagger.api')) {
+  if (!getOrDefault(req, 'openapi.api')) {
     setRequestStatus(res, httpStatus.NOT_FOUND).send().end();
   }
 
@@ -90,12 +95,12 @@ const handle = (req, res) => {
   }
 
   // check for an invalid path
-  if (req.swagger.path === null || req.swagger.path === undefined) {
+  if (req.openapi.path === null || req.openapi.path === undefined) {
     setRequestStatus(res, httpStatus.NOT_FOUND).send().end();
     return;
   }
 
-  // checked for mocked bhavior
+  // checked for mocked behavior
   const mockedResponse = getMockResponse(req.method, path, req.query);
   if (mockedResponse) {
     res.status(mockedResponse.status);
@@ -107,10 +112,14 @@ const handle = (req, res) => {
   }
 
   // check for default behavior
-  const { responses } = req.swagger.path[req.method.toLowerCase()];
-  const exampleResponseHttpCode = findKey(responses, r => getOrDefault(r, 'schema.example') !== undefined);
+  const { responses } = req.openapi.path[req.method.toLowerCase()];
+  const exampleResponseHttpCode = findKey(responses, (r) => {
+    const contentType = Object.keys(r.content)[0];
+    return getOrDefault(r.content[contentType], 'example') !== undefined;
+  });
   if (exampleResponseHttpCode !== undefined) {
-    res.send(responses[exampleResponseHttpCode].schema.example).end();
+    const contentType = Object.keys(responses[exampleResponseHttpCode].content)[0];
+    res.send(responses[exampleResponseHttpCode].content[contentType].example).end();
     return;
   }
 
@@ -139,6 +148,7 @@ const swaggerInterceptor = interceptor((req, res) => ({
 }));
 
 const errorMiddleware = (err, req, res, next) => {
+  console.log(err);
   if (err && err.message && !/mock$/.test(err.message)) {
     console.log(err); // eslint-disable-line no-console
     req.statusOverride = err.status;
@@ -148,18 +158,30 @@ const errorMiddleware = (err, req, res, next) => {
   }
 };
 
+const debugMiddleware = msg =>
+  (req, res, next) => {
+    console.log(msg, req.openapi);
+    next();
+  };
+
 swaggerMiddleware(swaggerPath, app, (err, middleware) => {
   app.use(
     swaggerInterceptor,
     bodyParser.urlencoded({ extended: false }),
     bodyParser.json(),
     middleware.metadata(),
+    debugMiddleware('ok5'),
     middleware.CORS(),
+    debugMiddleware('ok6'),
     middleware.files(),
+    debugMiddleware('ok7'),
     middleware.parseRequest(),
+    debugMiddleware('ok8'),
     middleware.validateRequest(),
     errorMiddleware,
+    debugMiddleware('ok10'),
     middleware.mock(),
+    debugMiddleware('ok11'),
   );
 
   const server = app.listen(port, () => {

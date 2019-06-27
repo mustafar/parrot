@@ -99,3 +99,18 @@ npm test
 ```
 
 Please feel free to send me a PR or open an [Issue](https://github.com/mustafar/parrot/issues).
+
+# OpenApi 3 Alpha
+
+Make the following changes in swagger-express-middleware
+- in /lib/helpers/util.js, use
+```
+util.isOpenApiRequest = function (req) {
+  // If req.openapi.operation is set, then so are req.openapi.api and req.openapi.path
+  return req.openapi !== undefined && req.openapi.operation !== undefined;
+};
+```
+- add a call to `next()` in the following middleware
+  - validate-request/parse-params.js
+  - validate-request/validate-content-length.js
+  - validate-request/validate-request-body.js

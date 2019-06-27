@@ -1,59 +1,77 @@
-swagger: "2.0"
+openapi: 3.0.0
 
 info:
   title: Parrot Test Api
   description: test api
-  version: 1.0.0
+  contact: {}
+  version: '1.0.0'
 
-basePath: /parrot-test
-schemes:
-  - http
-
-produces:
-  - application/json
-  - text/plain
-consumes:
-  - application/json
+servers:
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com/parrot-test # todo figure out basePath
 
 paths:
-
   /robin/location:
     get:
-      x-swagger-router-controller: robin-location-controller
+      summary: RobinLocation_GET
+      operationId: RobinlocationGet
+      parameters: []
       responses:
+        200:
+          description: ''
+          headers: {}
+          content:
+            text/plain:
+              schema:
+                type: string
         500:
           description: failed to find robin
-        200:
-          schema:
-            type: string
-            description: robin found
+      deprecated: false
 
   /robin/catchphrases/{id}:
     get:
-      x-swagger-router-controller: robin-catchphrases-controller
+      summary: RobinCatchphrasesById_GET
+      operationId: RobincatchphrasesbyidGet
       parameters:
-        - name: id
-          in: path
-          required: true
+      - name: id
+        in: path
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
           type: integer
+          format: int32
       responses:
+        200:
+          description: ''
+          headers: {}
+          content:
+            text/plain:
+              schema:
+                type: string
         500:
           description: failed to find catchphrase
-        200:
-          schema:
-            type: string
-            description: robin catchphrase
+      deprecated: false
 
   /batman/location:
     get:
-      x-swagger-router-controller: batman-location-controller
+      summary: BatmanLocation_GET
+      operationId: BatmanlocationGet
+      parameters: []
       responses:
+        200:
+          description: ''
+          headers: {}
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: batcave
         500:
           description: failed to find batman
-        201:
-          example: alfred's outhouse # example is at an unexpected level
-        200:
-          schema:
-            type: string
-            example: batcave # example at correct level
-            description: batman found
+      deprecated: false
+
+tags: []
