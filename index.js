@@ -114,6 +114,9 @@ const handle = (req, res) => {
   // check for default behavior
   const { responses } = req.openapi.path[req.method.toLowerCase()];
   const exampleResponseHttpCode = findKey(responses, (r) => {
+    if (!r.content) {
+      return false;
+    }
     const contentType = Object.keys(r.content)[0];
     return getOrDefault(r.content[contentType], 'example') !== undefined;
   });
