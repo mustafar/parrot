@@ -102,15 +102,5 @@ Please feel free to send me a PR or open an [Issue](https://github.com/mustafar/
 
 # OpenApi 3 Alpha
 
-Make the following changes in swagger-express-middleware
-- in /lib/helpers/util.js, use
-```
-util.isOpenApiRequest = function (req) {
-  // If req.openapi.operation is set, then so are req.openapi.api and req.openapi.path
-  return req.openapi !== undefined && req.openapi.operation !== undefined;
-};
-```
-- add a call to `next()` in the following middleware
-  - validate-request/parse-params.js
-  - validate-request/validate-content-length.js
-  - validate-request/validate-request-body.js
+Until this PR is merged, make these changes to swagger-express-middleware before bundling:  
+https://github.com/APIDevTools/swagger-express-middleware/pull/151

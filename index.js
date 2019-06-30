@@ -60,14 +60,10 @@ const getMockResponse = (method, path, query) => {
 };
 
 const handle = (req, res) => {
-  console.log('we here!', req.openapi.api);
-
   // todo fix openapi basePath
   // get swagger basePath
   const basePath = getOrDefault(req.openapi.api, 'basePath', '')
     .replace(/\/$/, '');
-
-  console.log(basePath);
 
   if (getOrDefault(req, 'statusOverride')) {
     setRequestStatus(res, req.statusOverride).send().end();
