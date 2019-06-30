@@ -10,7 +10,7 @@ servers:
 - url: http://{defaultHost}
   variables:
     defaultHost:
-      default: www.example.com/parrot-test # todo figure out basePath
+      default: www.example.com/parrot-test
 
 paths:
   /robin/location:
