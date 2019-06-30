@@ -6,12 +6,17 @@ import querystring from 'querystring';
 const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
-const swaggerMiddleware = require('swagger-express-middleware');
 const interceptor = require('express-interceptor');
+
+const isOpenApi3 = !!process.env.IS_OAS3;
+const getApiSpec = req => (isOpenApi3 ? req.openapi : req.swagger);
+const swaggerMiddleware = isOpenApi3
+  ? require('swagger-express-middleware-3')
+  : require('swagger-express-middleware-2');
 
 const app = express();
 const port = process.env.PORT;
-const swaggerPath = process.env.SWAGGER_SPEC;
+const swaggerPath = process.env.SWAGGER_SPEC || process.env.API_SPEC; // TODO deprecate SWAGGER_SPEC
 const isVerboseMode = process.env.VERBOSE !== undefined;
 
 // eslint-disable-next-line
@@ -60,16 +65,18 @@ const getMockResponse = (method, path, query) => {
 };
 
 const handle = (req, res) => {
-  // todo fix openapi basePath
+  // get api spec
+  const apiSpec = getApiSpec(req);
+
   // get swagger basePath
-  const basePath = getOrDefault(req.openapi.api, 'basePath', '')
+  const basePath = getOrDefault(apiSpec.api, 'basePath', '')
     .replace(/\/$/, '');
 
   if (getOrDefault(req, 'statusOverride')) {
     setRequestStatus(res, req.statusOverride).send().end();
   }
 
-  if (!getOrDefault(req, 'openapi.api')) {
+  if (!getOrDefault(apiSpec, 'api')) {
     setRequestStatus(res, httpStatus.NOT_FOUND).send().end();
   }
 
@@ -91,7 +98,7 @@ const handle = (req, res) => {
   }
 
   // check for an invalid path
-  if (req.openapi.path === null || req.openapi.path === undefined) {
+  if (apiSpec.path === null || apiSpec.path === undefined) {
     setRequestStatus(res, httpStatus.NOT_FOUND).send().end();
     return;
   }
@@ -108,18 +115,29 @@ const handle = (req, res) => {
   }
 
   // check for default behavior
-  const { responses } = req.openapi.path[req.method.toLowerCase()];
-  const exampleResponseHttpCode = findKey(responses, (r) => {
-    if (!r.content) {
-      return false;
+  const { responses } = apiSpec.path[req.method.toLowerCase()];
+  if (isOpenApi3) {
+    const exampleResponseHttpCode = findKey(responses, (r) => {
+      if (!r.content) {
+        return false;
+      }
+      const contentType = Object.keys(r.content)[0];
+      return getOrDefault(r.content[contentType], 'example') !== undefined;
+    });
+    if (exampleResponseHttpCode !== undefined) {
+      const contentType = Object.keys(responses[exampleResponseHttpCode].content)[0];
+      res.send(responses[exampleResponseHttpCode].content[contentType].example).end();
+      return;
     }
-    const contentType = Object.keys(r.content)[0];
-    return getOrDefault(r.content[contentType], 'example') !== undefined;
-  });
-  if (exampleResponseHttpCode !== undefined) {
-    const contentType = Object.keys(responses[exampleResponseHttpCode].content)[0];
-    res.send(responses[exampleResponseHttpCode].content[contentType].example).end();
-    return;
+  } else {
+    const exampleResponseHttpCode = findKey(
+      responses,
+      r => getOrDefault(r, 'schema.example') !== undefined,
+    );
+    if (exampleResponseHttpCode !== undefined) {
+      res.send(responses[exampleResponseHttpCode].schema.example).end();
+      return;
+    }
   }
 
   setRequestStatus(res, httpStatus.NOT_IMPLEMENTED).send().end();
@@ -172,7 +190,8 @@ swaggerMiddleware(swaggerPath, app, (err, middleware) => {
 
   const server = app.listen(port, () => {
     // eslint-disable-next-line no-console
-    console.log(`The mock api is now running at http://localhost:${port}`);
+    console.log(`The mock ${isOpenApi3 ? 'openapi3' : 'swagger2'} api is now ` +
+      `running at http://localhost:${port}`);
   });
 
   /* eslint-disable */

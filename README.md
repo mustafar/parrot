@@ -12,8 +12,8 @@ ENV PORT=3000
 
 # copy a swagger spec to /swagger.yml (inside container)
 # and also set the path of swagger.yml in the container
-COPY /path/to/a/swagger/spec /swagger.yml
-ENV SWAGGER_SPEC="/swagger.yml
+COPY /path/to/a/swagger/or/openapi3/spec /spec.yml
+ENV API_SPEC="/spec.yml
 ```
 
 ### Build container image
