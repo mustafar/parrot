@@ -102,5 +102,10 @@ Please feel free to send me a PR or open an [Issue](https://github.com/mustafar/
 
 # OpenApi 3 Alpha
 
-Until this PR is merged, make these changes to swagger-express-middleware before bundling:  
-https://github.com/APIDevTools/swagger-express-middleware/pull/151
+`swagger-express-middleware` is currently providing `alpha` support for OpenApi 3. As such, 
+`parrot` for OpenApi 3 is missing features and might contain bugs. Please watch this space 
+for updates.
+
+Ongoing work:
+- https://github.com/APIDevTools/swagger-express-middleware#openapi-30-support
+- https://github.com/APIDevTools/swagger-express-middleware/pull/151

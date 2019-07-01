@@ -1,0 +1,21 @@
+language: node_js
+
+node_js:
+  - 10
+
+services:
+  - docker
+
+cache:
+  directories:
+    - node_modules
+
+install:
+  - npm ci
+
+script:
+  - npm run build
+  - npm run test:setup
+  - sleep 10 # todo remove
+  - npm test
+  - docker logs parrot-openapi3 # todo remove
