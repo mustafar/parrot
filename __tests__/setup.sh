@@ -5,7 +5,7 @@ PARROT_NAME='mustafar/parrot'
 PARROT_ROOT=$(pwd)
 
 # stop running containers
-npm run docker:stop || true
+npm run docker:stop 2>/dev/null || true
 
 echo 'building image...'
 docker build -t ${PARROT_NAME} dist
