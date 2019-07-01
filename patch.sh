@@ -16,7 +16,7 @@ function change_file {
       "${line_num}s/.*/${line}/" \
       ${file}
   else
-    sed -e \
+    sed -i \
       "${line_num}s/.*/${line}/" \
       ${file}
   fi

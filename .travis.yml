@@ -16,6 +16,4 @@ install:
 script:
   - npm run build
   - npm run test:setup
-  - sleep 10 # todo remove
   - npm test
-  - docker logs parrot-openapi3 # todo remove
