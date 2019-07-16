@@ -32,6 +32,7 @@ change_file $file 36 "      basePath = util.normalizePath(basePath, router); con
 
 # 3) add next() call to validate-request/validate-params middleware
 file='./dist/node_modules/swagger-express-middleware-3/lib/middleware/validate-request/validate-params.js'
+change_file $file 45 "\/\/        schemaValidator.validate(value);"
 change_file $file 52 "  } next();"
 
 # 4) add next() call to validate-request/validate-request-body middleware
