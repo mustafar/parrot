@@ -37,12 +37,20 @@ const saveMock = (mockBehavior) => {
   const {
     method, path, status, response, qs,
   } = mockBehavior;
-  if (method === undefined ||
-    path === undefined ||
-    !/^\//.test(path) ||
-    status === undefined) {
-    throw new Error('invalid mock behavior supplied');
+
+  if (method === undefined) {
+    throw new Error('invalid mock behavior supplied. method is undefined');
   }
+  if (path === undefined) {
+    throw new Error('invalid mock behavior supplied. path is undefined');
+  }
+  if (status === undefined) {
+    throw new Error('invalid mock behavior supplied. status is undefined');
+  }
+  if (!/^\//.test(path)) {
+    throw new Error('invalid mock behavior supplied. path does not begin with a /');
+  }
+
   const mockResponse = { status };
   if (response !== undefined) {
     mockResponse.response = response;
