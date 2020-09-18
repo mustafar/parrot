@@ -2,7 +2,17 @@
 Mockable, containerized API generated from a Swagger spec.
 **Docker Repo**: https://hub.docker.com/r/mustafar/parrot/
 
-# Running
+# Getting started quickly
+If you don't need to publish out a mock docker image of your service and just want to generate a quick container that mocks a swagger file you have, you can issue this command
+
+```
+docker run -p 3000:3000 -v $(pwd):/myswagger -it --rm -e PORT=3000 -e SWAGGER_SPEC="/myswagger/swagger.yml" mustafar/parrot:latest
+```
+This assumes that swagger.yml exists in your current directory.
+
+# Build and run a docker image for a specific swagger file
+If you're a service author and want to publish out a mocked and versioned copy of your service for consumers to use in their tests, you can build a docker image off of the parrot docker image. 
+
 ### Setup Dockerfile
 ```
 FROM mustafar/parrot:latest
