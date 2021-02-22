@@ -45,4 +45,4 @@ git tag $version --force
 git push origin $version
 
 docker tag $docker_image_name $docker_image_name:$version
-docker push $docker_image_name
+docker push $docker_image_name:$version

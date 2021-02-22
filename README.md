@@ -22,8 +22,8 @@ ENV PORT=3000
 
 # copy a swagger spec to /swagger.yml (inside container)
 # and also set the path of swagger.yml in the container
-COPY /path/to/a/swagger/spec /swagger.yml
-ENV SWAGGER_SPEC="/swagger.yml
+COPY /path/to/a/swagger/or/openapi3/spec /spec.yml
+ENV API_SPEC="/spec.yml
 ```
 
 ### Build container image
@@ -109,3 +109,13 @@ npm test
 ```
 
 Please feel free to send me a PR or open an [Issue](https://github.com/mustafar/parrot/issues).
+
+# OpenApi 3 Alpha
+
+`swagger-express-middleware` is currently providing `alpha` support for OpenApi 3. As such, 
+`parrot` for OpenApi 3 is missing features and might contain bugs. Please watch this space 
+for updates.
+
+Ongoing work:
+- https://github.com/APIDevTools/swagger-express-middleware#openapi-30-support
+- https://github.com/APIDevTools/swagger-express-middleware/pull/151
