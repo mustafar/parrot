@@ -42,3 +42,8 @@ change_file $file 13 "  } next();"
 # 5) add next() call to validate-request/validate-content-length middleware
 file='./dist/node_modules/swagger-express-middleware-3/lib/middleware/validate-request/validate-content-length.js'
 change_file $file 24 "  } next();"
+
+# 6) fix request size calculation
+file='./dist/node_modules/swagger-express-middleware-3/lib/middleware/validate-request/validate-request-size.js'
+change_file $file 15 "    let bodyAllowed = req.openapi.operation.requestBody || req.openapi.params.some((param) => {"
+
