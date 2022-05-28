@@ -3,7 +3,7 @@
   "description": "api mocks",
   "repository": "github:mustafar/parrot",
   "type": "module",
-  "version": "5.0.6",
+  "version": "5.0.7",
   "engines": {
     "node": ">=16.15.0",
     "npm": ">=8.5.0"
