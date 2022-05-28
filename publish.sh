@@ -44,5 +44,11 @@ git push origin master
 git tag $version --force
 git push origin $version
 
-docker tag $docker_image_name $docker_image_name:$version
-docker push $docker_image_name:$version
+# docker tag $docker_image_name $docker_image_name:$version
+# docker push $docker_image_name:$version
+
+docker buildx create --use
+docker buildx build \
+--push \
+--platform linux/amd64,linux/arm64,linux/ppc64le \
+--tag $docker_image_name:$version .
