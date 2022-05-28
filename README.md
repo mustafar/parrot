@@ -113,3 +113,15 @@ Please feel free to send me a PR or open an [Issue](https://github.com/mustafar/
 # OpenApi 3 Support
 
 To use an OpenApi 3 spec, please set any value for environment variable `IS_OAS3`.
+
+Example:
+```
+docker run -d --name parrot-container-openapi3 \
+-e PORT=15010 \
+-e VERBOSE=on \
+-p 15010:15010 \
+-e API_SPEC="/spec.yml" \
+-e IS_OAS3="true" \
+-v openapi3_spec.yaml:/spec.yml \
+mustafar/parrot:latest
+```
