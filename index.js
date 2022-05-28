@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 const interceptor = require('express-interceptor');
 
 const isOpenApi3 = !!process.env.IS_OAS3;
-const getApiSpec = req => (isOpenApi3 ? req.openapi : req.swagger);
+const getApiSpec = (req) => (isOpenApi3 ? req.openapi : req.swagger);
 const swaggerMiddleware = isOpenApi3
   ? require('swagger-express-middleware-3')
   : require('swagger-express-middleware-2');
@@ -37,10 +37,10 @@ const saveMock = (mockBehavior) => {
   const {
     method, path, status, response, qs,
   } = mockBehavior;
-  if (method === undefined ||
-    path === undefined ||
-    !/^\//.test(path) ||
-    status === undefined) {
+  if (method === undefined
+    || path === undefined
+    || !/^\//.test(path)
+    || status === undefined) {
     throw new Error('invalid mock behavior supplied');
   }
   const mockResponse = { status };
@@ -67,7 +67,7 @@ const getMockResponse = (method, path, query) => {
     /* eslint-disable no-console */
     console.log('---------------------');
     console.log(`mocked keys: [ ${Object.keys(mocks)} ]`);
-    console.log(`requested query: ${query}`);
+    console.log(`requested query: ${JSON.stringify(query)}`);
     console.log(`requested key: ${key}`);
     /* eslint-enable no-console */
   }
@@ -142,7 +142,7 @@ const handle = (req, res) => {
   } else {
     const exampleResponseHttpCode = findKey(
       responses,
-      r => getOrDefault(r, 'schema.example') !== undefined,
+      (r) => getOrDefault(r, 'schema.example') !== undefined,
     );
     if (exampleResponseHttpCode !== undefined) {
       res.send(responses[exampleResponseHttpCode].schema.example).end();
@@ -200,8 +200,9 @@ swaggerMiddleware(swaggerPath, app, (err, middleware) => {
 
   const server = app.listen(port, () => {
     // eslint-disable-next-line no-console
-    console.log(`The mock ${isOpenApi3 ? 'openapi3' : 'swagger2'} api is now ` +
-      `running at http://localhost:${port}`);
+    console.log(
+      `The mock ${isOpenApi3 ? 'openapi3' : 'swagger2'} api is now running at http://localhost:${port}`,
+    );
   });
 
   /* eslint-disable */
