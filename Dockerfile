@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:slim-16
+FROM node:16.15.0-stretch-slim
 
 ADD ./ ./
 
