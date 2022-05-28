@@ -1,0 +1,77 @@
+openapi: 3.0.0
+
+info:
+  title: Parrot Test Api
+  description: test api
+  contact: {}
+  version: '1.0.0'
+
+servers:
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com/parrot-test
+
+paths:
+  /robin/location:
+    get:
+      summary: RobinLocation_GET
+      operationId: RobinlocationGet
+      parameters: []
+      responses:
+        200:
+          description: ''
+          headers: {}
+          content:
+            text/plain:
+              schema:
+                type: string
+        500:
+          description: failed to find robin
+      deprecated: false
+
+  /robin/catchphrases/{id}:
+    get:
+      summary: RobinCatchphrasesById_GET
+      operationId: RobincatchphrasesbyidGet
+      parameters:
+      - name: id
+        in: path
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: ''
+          headers: {}
+          content:
+            text/plain:
+              schema:
+                type: string
+        500:
+          description: failed to find catchphrase
+      deprecated: false
+
+  /batman/location:
+    get:
+      summary: BatmanLocation_GET
+      operationId: BatmanlocationGet
+      parameters: []
+      responses:
+        200:
+          description: ''
+          headers: {}
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: batcave
+        500:
+          description: failed to find batman
+      deprecated: false
+
+tags: []

@@ -1,0 +1,19 @@
+language: node_js
+
+node_js:
+  - 10
+
+services:
+  - docker
+
+cache:
+  directories:
+    - node_modules
+
+install:
+  - npm ci
+
+script:
+  - npm run build
+  - npm run test:setup
+  - npm test

@@ -11,7 +11,7 @@ docker run -p 3000:3000 -v $(pwd):/myswagger -it --rm -e PORT=3000 -e SWAGGER_SP
 This assumes that swagger.yml exists in your current directory.
 
 # Build and run a docker image for a specific swagger file
-If you're a service author and want to publish out a mocked and versioned copy of your service for consumers to use in their tests, you can build a docker image off of the parrot docker image. 
+If you're a service author and want to publish out a mocked and versioned copy of your service for consumers to use in their tests, you can build a docker image off of the parrot docker image.
 
 ### Setup Dockerfile
 ```
@@ -22,8 +22,8 @@ ENV PORT=3000
 
 # copy a swagger spec to /swagger.yml (inside container)
 # and also set the path of swagger.yml in the container
-COPY /path/to/a/swagger/spec /swagger.yml
-ENV SWAGGER_SPEC="/swagger.yml
+COPY /path/to/a/swagger/or/openapi3/spec /spec.yml
+ENV API_SPEC="/spec.yml
 ```
 
 ### Build container image
@@ -109,3 +109,7 @@ npm test
 ```
 
 Please feel free to send me a PR or open an [Issue](https://github.com/mustafar/parrot/issues).
+
+# OpenApi 3 Support
+
+To use an OpenApi 3 spec, please set any value for environment variable `IS_OAS3`.
