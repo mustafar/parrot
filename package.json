@@ -2,7 +2,7 @@
   "name": "parrot",
   "description": "api mocks",
   "repository": "github:mustafar/parrot",
-  "version": "5.0.4",
+  "version": "5.0.5",
   "engines": {
     "node": ">=16.15.0",
     "npm": ">=8.5.0"
