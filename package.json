@@ -13,8 +13,7 @@
     "lint": "eslint *.js --cache",
     "test:setup": "bash __tests__/setup.sh",
     "test": "jest",
-    "docker:stop": "docker stop $(docker ps -a -q --filter=\"ancestor=mustafar/parrot\") 2>/dev/null && docker rm $(docker ps -a -q --filter=\"ancestor=mustafar/parrot\") 2>/dev/null",
-    "prepare": "husky install"
+    "docker:stop": "docker stop $(docker ps -a -q --filter=\"ancestor=mustafar/parrot\") 2>/dev/null && docker rm $(docker ps -a -q --filter=\"ancestor=mustafar/parrot\") 2>/dev/null"
   },
   "keywords": [
     "docker",
@@ -41,7 +40,6 @@
     "eslint": "^8.16.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "husky": "^8.0.1",
     "jest": "^28.1.0",
     "node-fetch": "^2.0.0"
   },
