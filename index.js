@@ -67,7 +67,7 @@ const getMockResponse = (method, path, query) => {
     /* eslint-disable no-console */
     console.log('---------------------');
     console.log(`mocked keys: [ ${Object.keys(mocks)} ]`);
-    console.log(`requested query: ${query}`);
+    console.log(`requested query: ${JSON.stringify(query)}`);
     console.log(`requested key: ${key}`);
     /* eslint-enable no-console */
   }
