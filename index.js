@@ -47,7 +47,16 @@ const saveMock = (mockBehavior) => {
   if (response !== undefined) {
     mockResponse.response = response;
   }
-  const queryHash = getQueryHash(querystring.parse(qs));
+  const parsedQuery = querystring.parse(qs);
+  const queryHash = getQueryHash(parsedQuery);
+
+  if (isVerboseMode) {
+    /* eslint-disable no-console */
+    console.log('---------------------');
+    console.log(`saving mock -- method:${method} | path:${path} | query:${qs}`);
+    /* eslint-enable no-console */
+  }
+
   mocks[mockKey(method, `${path}${queryHash}`)] = mockResponse;
 };
 const getMockResponse = (method, path, query) => {
@@ -58,6 +67,7 @@ const getMockResponse = (method, path, query) => {
     /* eslint-disable no-console */
     console.log('---------------------');
     console.log(`mocked keys: [ ${Object.keys(mocks)} ]`);
+    console.log(`requested query: ${query}`);
     console.log(`requested key: ${key}`);
     /* eslint-enable no-console */
   }

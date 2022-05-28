@@ -11,7 +11,7 @@ docker run -p 3000:3000 -v $(pwd):/myswagger -it --rm -e PORT=3000 -e SWAGGER_SP
 This assumes that swagger.yml exists in your current directory.
 
 # Build and run a docker image for a specific swagger file
-If you're a service author and want to publish out a mocked and versioned copy of your service for consumers to use in their tests, you can build a docker image off of the parrot docker image. 
+If you're a service author and want to publish out a mocked and versioned copy of your service for consumers to use in their tests, you can build a docker image off of the parrot docker image.
 
 ### Setup Dockerfile
 ```
@@ -110,12 +110,6 @@ npm test
 
 Please feel free to send me a PR or open an [Issue](https://github.com/mustafar/parrot/issues).
 
-# OpenApi 3 Alpha
+# OpenApi 3 Support
 
-`swagger-express-middleware` is currently providing `alpha` support for OpenApi 3. As such, 
-`parrot` for OpenApi 3 is missing features and might contain bugs. Please watch this space 
-for updates.
-
-Ongoing work:
-- https://github.com/APIDevTools/swagger-express-middleware#openapi-30-support
-- https://github.com/APIDevTools/swagger-express-middleware/pull/151
+To use an OpenApi 3 spec, please set any value for environment variable `IS_OAS3`.
