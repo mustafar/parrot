@@ -27,11 +27,17 @@
   "author": "Mustafa Rizvi",
   "license": "MIT",
   "jest": {
-    "testURL": "http://localhost/"
+    "testEnvironmentOptions": {
+      "url": "http://localhost/"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist"
+    ]
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
     "eslint": "^8.16.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
