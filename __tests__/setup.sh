@@ -29,4 +29,15 @@ docker run -d --name parrot-openapi3 \
 -v "${PARROT_ROOT}/__tests__/openapi3.yml":/spec.yml \
 ${PARROT_NAME}:latest
 
+echo '\nstarting openapi3 ignore query container...'
+docker run -d --name parrot-openapi3-ignore-query \
+-e PORT=15011 \
+-e VERBOSE=on \
+-p 15011:15011 \
+-e API_SPEC="/spec.yml" \
+-e IS_OAS3="true" \
+-e IGNORE_QUERY_HASH=true \
+-v "${PARROT_ROOT}/__tests__/openapi3.yml":/spec.yml \
+${PARROT_NAME}:latest
+
 echo 'containers started!'

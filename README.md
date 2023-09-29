@@ -95,6 +95,11 @@ To enable verbose logging, set `VERBOSE` environment variable when running the c
 -e VERBOSE=on
 ```
 
+To ignore the query string when finding a mock, set the `IGNORE_QUERY_HASH` environment variable to `true` when running the container
+```
+-e IGNORE_QUERY_HASH=true
+```
+
 Check out the [tests](https://github.com/mustafar/parrot/blob/master/__tests__/tests.js) for more examples!
 
 # Contributing

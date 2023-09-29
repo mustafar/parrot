@@ -18,6 +18,7 @@ const app = express();
 const port = process.env.PORT;
 const swaggerPath = process.env.SWAGGER_SPEC || process.env.API_SPEC; // TODO deprecate SWAGGER_SPEC
 const isVerboseMode = process.env.VERBOSE !== undefined;
+const ignoreQueryHash = process.env.IGNORE_QUERY_HASH === 'true';
 
 // eslint-disable-next-line
 const getQueryHash = (query) => isEmpty(query) ? '' : JSum.digest(query, 'SHA256', 'hex');
@@ -62,13 +63,22 @@ const saveMock = (mockBehavior) => {
 const getMockResponse = (method, path, query) => {
   const queryHash = getQueryHash(query);
   const key = mockKey(method, `${path}${queryHash}`);
-  const mockResponse = mocks[key];
+  let mockResponse = mocks[key];
+
+  let noQueryKey = '';
+  if (!mockResponse && ignoreQueryHash && queryHash) {
+    noQueryKey = mockKey(method, path);
+    mockResponse = mocks[noQueryKey];
+  }
+
   if (isVerboseMode) {
     /* eslint-disable no-console */
     console.log('---------------------');
     console.log(`mocked keys: [ ${Object.keys(mocks)} ]`);
     console.log(`requested query: ${JSON.stringify(query)}`);
     console.log(`requested key: ${key}`);
+    console.log(`ignore query hash: ${ignoreQueryHash}`);
+    console.log(`no query key: ${noQueryKey}`);
     /* eslint-enable no-console */
   }
   return mockResponse;

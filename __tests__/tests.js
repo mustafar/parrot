@@ -107,7 +107,6 @@ const runTests = (apiBase) => {
     expect(response.text()).resolves.toEqual('wayne manor');
   });
 
-
   test('if mocked, with query string, returns different responses by query', async () => {
     let response = await fetch(`${apiBase}/batman/location`);
     expect(response.text()).resolves.toEqual('batcave');
@@ -230,4 +229,36 @@ describe('openapi 3', () => {
   });
 
   runTests(apiBase);
+});
+
+describe('openapi 3 ignore query', () => {
+  const apiBase = 'http://localhost:15011/parrot-test';
+
+  const mockResponse = async (location, qs) => {
+    const mock = {
+      method: 'GET', path: '/batman/location', status: 201, response: { location },
+    };
+
+    const response = await fetch(
+      `${apiBase}/mock`,
+      {
+        method: 'PUT', body: JSON.stringify(mock), headers: { 'content-type': 'application/json' }, qs,
+      },
+    );
+    expect(response.status).toEqual(204);
+    expect(response.statusText).toEqual('No Content');
+  };
+
+  test('if ignoring query hash, ignores query hash', async () => {
+    await mockResponse('arkahm', 'a=123');
+    await mockResponse('wayne manor');
+
+    const matchQueryResponse = await fetch(`${apiBase}/batman/location?a=123`, { method: 'GET' });
+    expect(matchQueryResponse.status).toEqual(201);
+    expect(matchQueryResponse.json()).resolves.toEqual({ location: 'arkham' });
+
+    const mismatchQueryResponse = await fetch(`${apiBase}/batman/location?a=123&b=xyz`, { method: 'GET' });
+    expect(mismatchQueryResponse.status).toEqual(201);
+    expect(mismatchQueryResponse.json()).resolves.toEqual({ location: 'wayne manor' });
+  });
 });
